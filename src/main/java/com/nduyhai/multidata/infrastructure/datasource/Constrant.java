@@ -4,7 +4,7 @@ public final class Constrant {
     private Constrant() {
     }
 
-    public static final class First {
+    public final class First {
         public static final String PREFIX = "first";
         public static final String ENTITY_MANAGER = PREFIX + "EntityManager";
         public static final String TRANSACTION_MANAGER = PREFIX + "TransactionManager";

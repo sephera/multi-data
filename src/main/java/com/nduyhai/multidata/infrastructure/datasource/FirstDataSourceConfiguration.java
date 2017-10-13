@@ -1,5 +1,6 @@
 package com.nduyhai.multidata.infrastructure.datasource;
 
+import org.apache.tomcat.jdbc.pool.DataSource;
 import org.apache.tomcat.jdbc.pool.jmx.ConnectionPool;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
@@ -11,58 +12,61 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import javax.sql.DataSource;
 import java.sql.SQLException;
+
+import static com.nduyhai.multidata.infrastructure.datasource.Constrant.First.*;
 
 
 @Configuration
+@EnableTransactionManagement
 @EnableJpaRepositories(
-        entityManagerFactoryRef = Constrant.First.ENTITY_MANAGER,
-        transactionManagerRef = Constrant.First.TRANSACTION_MANAGER,
-        basePackages = {Constrant.First.REPO_PACKAGE})
-public class FirstDataSource extends AbstractMultipleDataSource {
+        entityManagerFactoryRef = ENTITY_MANAGER,
+        transactionManagerRef = TRANSACTION_MANAGER,
+        basePackages = {REPO_PACKAGE})
+public class FirstDataSourceConfiguration extends AbstractMultipleDataSource {
 
-    @Bean(name = Constrant.First.PROPERTIES)
-    @ConfigurationProperties(prefix = Constrant.First.PREFIX_PROPERTIES)
+    @Bean(name = PROPERTIES)
+    @ConfigurationProperties(prefix = PREFIX_PROPERTIES)
     public JpaProperties properties() {
         return new JpaProperties();
     }
 
     @Primary
-    @Bean(name = Constrant.First.DATASOURCE)
-    @ConfigurationProperties(prefix = Constrant.First.PREFIX_DATASOURCE)
+    @Bean(name = DATASOURCE)
+    @ConfigurationProperties(prefix = PREFIX_DATASOURCE)
     public DataSource dataSource() {
-        return DataSourceBuilder.create().type(DataSource.class).build();
+        return (DataSource) DataSourceBuilder.create().type(DataSource.class).build();
     }
 
-    @Bean(name = Constrant.First.POOL)
-    public ConnectionPool jmxPool(@Qualifier(Constrant.First.DATASOURCE) DataSource dataSource) throws SQLException {
-        return this.jmxPool(dataSource);
+    @Bean(name = POOL)
+    public ConnectionPool jmxPool(@Qualifier(DATASOURCE) DataSource dataSource) throws SQLException {
+        return this.createJmxPool(dataSource);
     }
 
-    @Bean(name = Constrant.First.ENTITY_MANAGER)
+    @Bean(name = ENTITY_MANAGER)
     public LocalContainerEntityManagerFactoryBean entityManager(
-            @Qualifier(Constrant.First.PROPERTIES) JpaProperties properties,
-            @Qualifier(Constrant.First.DATASOURCE) DataSource datasource) {
+            @Qualifier(PROPERTIES) JpaProperties properties,
+            @Qualifier(DATASOURCE) DataSource datasource) {
         return this.buildEntityManager(properties, datasource);
     }
 
 
     @Primary
-    @Bean(name = Constrant.First.TRANSACTION_MANAGER)
-    public PlatformTransactionManager transactionManager(@Qualifier(Constrant.First.ENTITY_MANAGER) LocalContainerEntityManagerFactoryBean entityManager) {
+    @Bean(name = TRANSACTION_MANAGER)
+    public PlatformTransactionManager transactionManager(@Qualifier(ENTITY_MANAGER) LocalContainerEntityManagerFactoryBean entityManager) {
         return this.buildTransactionManager(entityManager);
     }
 
 
     @Override
     protected String entityPackage() {
-        return Constrant.First.ENTITY_PACKAGE;
+        return ENTITY_PACKAGE;
     }
 
     @Override
     protected String unitName() {
-        return Constrant.First.UNIT;
+        return UNIT;
     }
 }

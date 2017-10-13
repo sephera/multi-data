@@ -1,6 +1,7 @@
 package com.nduyhai.multidata.infrastructure.datasource;
 
 
+import org.apache.tomcat.jdbc.pool.DataSource;
 import org.apache.tomcat.jdbc.pool.jmx.ConnectionPool;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
@@ -12,54 +13,55 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import javax.sql.DataSource;
 import java.sql.SQLException;
+
+import static com.nduyhai.multidata.infrastructure.datasource.Constrant.Second.*;
 
 @Configuration
 @EnableJpaRepositories(
-        entityManagerFactoryRef = Constrant.Second.ENTITY_MANAGER,
-        transactionManagerRef = Constrant.Second.TRANSACTION_MANAGER,
-        basePackages = {Constrant.Second.REPO_PACKAGE})
-public class SecondDataSource extends AbstractMultipleDataSource {
+        entityManagerFactoryRef = ENTITY_MANAGER,
+        transactionManagerRef = TRANSACTION_MANAGER,
+        basePackages = {REPO_PACKAGE})
+public class SecondDataSourceConfiguration extends AbstractMultipleDataSource {
 
-    @Bean(name = Constrant.Second.PROPERTIES)
-    @ConfigurationProperties(prefix = Constrant.Second.PREFIX_PROPERTIES)
+    @Bean(name = PROPERTIES)
+    @ConfigurationProperties(prefix = PREFIX_PROPERTIES)
     public JpaProperties properties() {
         return new JpaProperties();
     }
 
-    @Bean(name = Constrant.Second.DATASOURCE)
-    @ConfigurationProperties(prefix = Constrant.Second.PREFIX_DATASOURCE)
+    @Bean(name = DATASOURCE)
+    @ConfigurationProperties(prefix = PREFIX_DATASOURCE)
     public DataSource dataSource() {
         return (DataSource) DataSourceBuilder.create().type(DataSource.class).build();
     }
 
-    @Bean(name = Constrant.Second.POOL)
-    public ConnectionPool jmxPool(@Qualifier(Constrant.Second.DATASOURCE) DataSource dataSource) throws SQLException {
-        return this.jmxPool(dataSource);
+    @Bean(name = POOL)
+    public ConnectionPool jmxPool(@Qualifier(DATASOURCE) DataSource dataSource) throws SQLException {
+        return this.createJmxPool(dataSource);
     }
 
-    @Bean(name = Constrant.Second.ENTITY_MANAGER)
+    @Bean(name = ENTITY_MANAGER)
     public LocalContainerEntityManagerFactoryBean entityManager(
-            @Qualifier(Constrant.Second.PROPERTIES) JpaProperties properties,
-            @Qualifier(Constrant.Second.DATASOURCE) DataSource datasource) {
+            @Qualifier(PROPERTIES) JpaProperties properties,
+            @Qualifier(DATASOURCE) DataSource datasource) {
         return this.buildEntityManager(properties, datasource);
     }
 
 
-    @Bean(name = Constrant.Second.TRANSACTION_MANAGER)
-    public PlatformTransactionManager transactionManager(@Qualifier(Constrant.Second.ENTITY_MANAGER) LocalContainerEntityManagerFactoryBean entityManager) {
+    @Bean(name = TRANSACTION_MANAGER)
+    public PlatformTransactionManager transactionManager(@Qualifier(ENTITY_MANAGER) LocalContainerEntityManagerFactoryBean entityManager) {
         return this.buildTransactionManager(entityManager);
     }
 
 
     @Override
     protected String entityPackage() {
-        return Constrant.Second.ENTITY_PACKAGE;
+        return ENTITY_PACKAGE;
     }
 
     @Override
     protected String unitName() {
-        return Constrant.Second.UNIT;
+        return UNIT;
     }
 }

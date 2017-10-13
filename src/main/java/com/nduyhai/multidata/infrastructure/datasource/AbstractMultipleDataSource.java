@@ -21,7 +21,13 @@ public abstract class AbstractMultipleDataSource {
     @Autowired(required = false)
     private PersistenceUnitManager persistenceUnitManager;
 
-    protected ConnectionPool jmxPool(DataSource dataSource) throws SQLException {
+    /**
+     * Create Jmx for monitor with JConsole
+     * @param dataSource
+     * @return
+     * @throws SQLException
+     */
+    protected ConnectionPool createJmxPool(DataSource dataSource) throws SQLException {
         return ((DataSourceProxy) dataSource).createPool().getJmxPool();
     }
 
