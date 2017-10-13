@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.sql.SQLException;
 
-import static com.nduyhai.multidata.infrastructure.datasource.Constrant.First.*;
+import static com.nduyhai.multidata.infrastructure.datasource.DataSourceConstant.First.*;
 
 
 @Configuration

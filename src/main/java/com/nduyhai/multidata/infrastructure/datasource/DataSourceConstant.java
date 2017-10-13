@@ -1,7 +1,7 @@
 package com.nduyhai.multidata.infrastructure.datasource;
 
-public final class Constrant {
-    private Constrant() {
+public final class DataSourceConstant {
+    private DataSourceConstant() {
     }
 
     public final class First {

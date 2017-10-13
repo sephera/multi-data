@@ -15,7 +15,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import java.sql.SQLException;
 
-import static com.nduyhai.multidata.infrastructure.datasource.Constrant.Second.*;
+import static com.nduyhai.multidata.infrastructure.datasource.DataSourceConstant.Second.*;
 
 @Configuration
 @EnableJpaRepositories(
