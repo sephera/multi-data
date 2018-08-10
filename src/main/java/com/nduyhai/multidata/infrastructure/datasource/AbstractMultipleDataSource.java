@@ -1,10 +1,8 @@
 package com.nduyhai.multidata.infrastructure.datasource;
 
-import java.sql.SQLException;
 import javax.sql.DataSource;
-import org.apache.tomcat.jdbc.pool.DataSourceProxy;
-import org.apache.tomcat.jdbc.pool.jmx.ConnectionPool;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -20,11 +18,9 @@ public abstract class AbstractMultipleDataSource {
   @Autowired(required = false)
   private PersistenceUnitManager persistenceUnitManager;
 
-  /**
-   * Create Jmx for monitor with JConsole
-   */
-  protected ConnectionPool createJmxPool(DataSource dataSource) throws SQLException {
-    return ((DataSourceProxy) dataSource).createPool().getJmxPool();
+  protected static <T> T createDataSource(DataSourceProperties properties,
+      Class<? extends DataSource> type) {
+    return (T) properties.initializeDataSourceBuilder().type(type).build();
   }
 
   protected EntityManagerFactoryBuilder createEntityManagerFactoryBuilder(
