@@ -1,5 +1,7 @@
 package com.nduyhai.multidata.infrastructure.datasource;
 
+import java.sql.SQLException;
+import javax.sql.DataSource;
 import org.apache.tomcat.jdbc.pool.DataSourceProxy;
 import org.apache.tomcat.jdbc.pool.jmx.ConnectionPool;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,55 +15,54 @@ import org.springframework.orm.jpa.vendor.AbstractJpaVendorAdapter;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import javax.sql.DataSource;
-import java.sql.SQLException;
-
 public abstract class AbstractMultipleDataSource {
 
-    @Autowired(required = false)
-    private PersistenceUnitManager persistenceUnitManager;
+  @Autowired(required = false)
+  private PersistenceUnitManager persistenceUnitManager;
 
-    /**
-     * Create Jmx for monitor with JConsole
-     * @param dataSource
-     * @return
-     * @throws SQLException
-     */
-    protected ConnectionPool createJmxPool(DataSource dataSource) throws SQLException {
-        return ((DataSourceProxy) dataSource).createPool().getJmxPool();
-    }
+  /**
+   * Create Jmx for monitor with JConsole
+   */
+  protected ConnectionPool createJmxPool(DataSource dataSource) throws SQLException {
+    return ((DataSourceProxy) dataSource).createPool().getJmxPool();
+  }
 
-    protected EntityManagerFactoryBuilder createEntityManagerFactoryBuilder(final JpaProperties properties,
-                                                                            final PersistenceUnitManager persistenceUnitManager) {
-        JpaVendorAdapter jpaVendorAdapter = this.createJpaVendorAdapter(properties);
+  protected EntityManagerFactoryBuilder createEntityManagerFactoryBuilder(
+      final JpaProperties properties,
+      final PersistenceUnitManager persistenceUnitManager) {
+    final JpaVendorAdapter jpaVendorAdapter = this.createJpaVendorAdapter(properties);
 
-        return new EntityManagerFactoryBuilder(jpaVendorAdapter,
-                properties.getProperties(), persistenceUnitManager);
-    }
+    return new EntityManagerFactoryBuilder(jpaVendorAdapter,
+        properties.getProperties(), persistenceUnitManager);
+  }
 
-    private JpaVendorAdapter createJpaVendorAdapter(final JpaProperties jpaProperties) {
-        AbstractJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
-        adapter.setShowSql(jpaProperties.isShowSql());
-        adapter.setDatabase(jpaProperties.getDatabase());
-        adapter.setDatabasePlatform(jpaProperties.getDatabasePlatform());
-        adapter.setGenerateDdl(jpaProperties.isGenerateDdl());
-        return adapter;
-    }
+  private JpaVendorAdapter createJpaVendorAdapter(final JpaProperties jpaProperties) {
+    final AbstractJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
+    adapter.setShowSql(jpaProperties.isShowSql());
+    adapter.setDatabase(jpaProperties.getDatabase());
+    adapter.setDatabasePlatform(jpaProperties.getDatabasePlatform());
+    adapter.setGenerateDdl(jpaProperties.isGenerateDdl());
 
-    protected LocalContainerEntityManagerFactoryBean buildEntityManager(final JpaProperties properties, final DataSource datasource) {
-        EntityManagerFactoryBuilder builder = this.createEntityManagerFactoryBuilder(properties, this.persistenceUnitManager);
-        return builder
-                .dataSource(datasource)
-                .packages(this.entityPackage())
-                .persistenceUnit(this.unitName())
-                .build();
-    }
+    return adapter;
+  }
 
-    protected PlatformTransactionManager buildTransactionManager(final LocalContainerEntityManagerFactoryBean  entityManager) {
-        return new JpaTransactionManager(entityManager.getObject());
-    }
+  protected LocalContainerEntityManagerFactoryBean buildEntityManager(
+      final JpaProperties properties, final DataSource datasource) {
+    EntityManagerFactoryBuilder builder = this
+        .createEntityManagerFactoryBuilder(properties, this.persistenceUnitManager);
+    return builder
+        .dataSource(datasource)
+        .packages(this.entityPackage())
+        .persistenceUnit(this.unitName())
+        .build();
+  }
 
-    protected abstract String entityPackage();
+  protected PlatformTransactionManager buildTransactionManager(
+      final LocalContainerEntityManagerFactoryBean entityManager) {
+    return new JpaTransactionManager(entityManager.getObject());
+  }
 
-    protected abstract String unitName();
+  protected abstract String entityPackage();
+
+  protected abstract String unitName();
 }
