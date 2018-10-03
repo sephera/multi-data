@@ -4,9 +4,9 @@ import static com.nduyhai.multidata.infrastructure.datasource.DataSourceConstant
 import static com.nduyhai.multidata.infrastructure.datasource.DataSourceConstant.First.DATASOURCE_PROPERTIES;
 import static com.nduyhai.multidata.infrastructure.datasource.DataSourceConstant.First.ENTITY_MANAGER;
 import static com.nduyhai.multidata.infrastructure.datasource.DataSourceConstant.First.ENTITY_PACKAGE;
+import static com.nduyhai.multidata.infrastructure.datasource.DataSourceConstant.First.JPA_PROPERTIES;
 import static com.nduyhai.multidata.infrastructure.datasource.DataSourceConstant.First.PREFIX_DATASOURCE;
 import static com.nduyhai.multidata.infrastructure.datasource.DataSourceConstant.First.PREFIX_PROPERTIES;
-import static com.nduyhai.multidata.infrastructure.datasource.DataSourceConstant.First.JPA_PROPERTIES;
 import static com.nduyhai.multidata.infrastructure.datasource.DataSourceConstant.First.REPO_PACKAGE;
 import static com.nduyhai.multidata.infrastructure.datasource.DataSourceConstant.First.TRANSACTION_MANAGER;
 import static com.nduyhai.multidata.infrastructure.datasource.DataSourceConstant.First.UNIT;

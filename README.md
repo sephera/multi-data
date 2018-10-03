@@ -6,4 +6,4 @@ Multiple DataSource Spring Data JPA
 * Run `retup.sh` to setup postgresql in docker
 
 ## Build
-* $ ./mvnw clean install
+* `$ ./mvnw clean install`
