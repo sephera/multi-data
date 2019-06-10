@@ -12,6 +12,8 @@ import static com.nduyhai.multidata.infrastructure.datasource.DataSourceConstant
 import static com.nduyhai.multidata.infrastructure.datasource.DataSourceConstant.Second.TRANSACTION_MANAGER;
 import static com.nduyhai.multidata.infrastructure.datasource.DataSourceConstant.Second.UNIT;
 
+import com.nduyhai.multidata.infrastructure.config.FlexyPoolConfiguration;
+import com.vladmihalcea.flexypool.FlexyPoolDataSource;
 import com.zaxxer.hikari.HikariDataSource;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -46,13 +48,15 @@ public class SecondDataSourceConfiguration extends AbstractMultipleDataSource {
     return new DataSourceProperties();
   }
 
-  @Bean(name = DATASOURCE)
-  public DataSource dataSource(@Qualifier(DATASOURCE_PROPERTIES) DataSourceProperties properties) {
+  @Bean(name = DATASOURCE, initMethod = "start", destroyMethod = "stop")
+  public FlexyPoolDataSource dataSource(
+      @Qualifier(DATASOURCE_PROPERTIES) DataSourceProperties properties) {
     final HikariDataSource dataSource = createDataSource(properties, HikariDataSource.class);
     if (StringUtils.hasText(properties.getName())) {
       dataSource.setPoolName(properties.getName());
     }
-    return dataSource;
+
+    return FlexyPoolConfiguration.datasource(dataSource.getPoolName(), dataSource);
   }
 
   @Bean(name = ENTITY_MANAGER)

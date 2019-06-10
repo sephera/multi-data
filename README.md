@@ -1,8 +1,9 @@
 # multi-data
-Multiple DataSource Spring Data JPA
+Auto configuration Multiple DataSource Spring Data JPA
 
-## Setup database
+## Setup database with docker
 * Install docker
+* Install docker-compose
 * Run `retup.sh` to setup postgresql in docker
 
 ## Build
