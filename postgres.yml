@@ -3,9 +3,11 @@ version: '3.1'
 services:
 
   db:
-    image: postgres:9.6
+    image: postgres:11.5-alpine
     restart: always
     environment:
+      POSTGRES_USER: john
       POSTGRES_PASSWORD: example
+      POSTGRES_DB: mdata
     ports:
     - 5432:5432
