@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-docker-compose -f postgres.yml up
+docker-compose up
