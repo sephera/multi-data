@@ -7,6 +7,9 @@ public final class DataSourceConstant {
 
   public static final class Second {
 
+    private Second() {
+    }
+
     public static final String PREFIX = "second";
     public static final String ENTITY_MANAGER = PREFIX + "EntityManager";
     public static final String TRANSACTION_MANAGER = PREFIX + "TransactionManager";
@@ -20,7 +23,10 @@ public final class DataSourceConstant {
     public static final String UNIT = PREFIX + "Unit";
   }
 
-  public final class First {
+  public static final class First {
+
+    private First() {
+    }
 
     public static final String PREFIX = "first";
     public static final String ENTITY_MANAGER = PREFIX + "EntityManager";

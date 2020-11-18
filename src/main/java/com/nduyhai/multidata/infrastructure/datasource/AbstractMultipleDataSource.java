@@ -1,5 +1,6 @@
 package com.nduyhai.multidata.infrastructure.datasource;
 
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
@@ -12,12 +13,14 @@ import org.springframework.orm.jpa.persistenceunit.PersistenceUnitManager;
 import org.springframework.orm.jpa.vendor.AbstractJpaVendorAdapter;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.util.Assert;
 
 public abstract class AbstractMultipleDataSource {
 
   @Autowired(required = false)
   private PersistenceUnitManager persistenceUnitManager;
 
+  @SuppressWarnings("unchecked")
   protected static <T> T createDataSource(DataSourceProperties properties,
       Class<? extends DataSource> type) {
     return (T) properties.initializeDataSourceBuilder().type(type).build();
@@ -55,7 +58,9 @@ public abstract class AbstractMultipleDataSource {
 
   protected PlatformTransactionManager buildTransactionManager(
       final LocalContainerEntityManagerFactoryBean entityManager) {
-    return new JpaTransactionManager(entityManager.getObject());
+    final EntityManagerFactory emf = entityManager.getObject();
+    Assert.notNull(emf, "Could not null");
+    return new JpaTransactionManager(emf);
   }
 
   protected abstract String entityPackage();
